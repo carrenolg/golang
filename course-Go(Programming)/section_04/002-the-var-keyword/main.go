@@ -24,5 +24,5 @@ func other() {
 	// global variable
 	fmt.Println(w)
 	// local variable
-	// fmt.Println(z) (Erro)
+	// fmt.Println(z) (Error)
 }
