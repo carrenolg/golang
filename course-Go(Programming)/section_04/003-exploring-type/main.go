@@ -2,7 +2,7 @@ package main
 
 import "fmt"
 
-// Declare variable TYPE int
+// Declare variable of TYPE int
 var z int = 10
 
 // declare varible of TYPE string
@@ -28,6 +28,7 @@ func main() {
 	// cannot use 10 (type untyped int) as type string in assignment
 
 	// raw string literals
+	// Examples:
 	var s string = `Hello world, "name"`
 	fmt.Println(s)
 
@@ -35,4 +36,5 @@ func main() {
 Tel: 315684
 email: carreno@hotmail.com`
 	fmt.Println(a)
+
 }
