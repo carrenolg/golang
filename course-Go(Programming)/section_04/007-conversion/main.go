@@ -16,7 +16,7 @@ func main() {
 	fmt.Printf("%T\n", y)
 	fmt.Println(x)
 	fmt.Printf("%T\n", x)
-	// conversion type hotdog into type int
+	// conversion x of type hotdog into type int
 	y = int(x) // conversion
 	fmt.Println(y)
 	fmt.Printf("%T\n", y)
