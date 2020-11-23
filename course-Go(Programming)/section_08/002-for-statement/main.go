@@ -33,7 +33,7 @@ func main() {
 		fmt.Println("iteration")
 	}
 
-	// examples
+	// examples for statement
 	fmt.Println("example 1")
 	var testdata *struct {
 		a *[7]int
