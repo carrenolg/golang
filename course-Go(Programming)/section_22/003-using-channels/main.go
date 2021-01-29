@@ -8,7 +8,7 @@ func main() {
 
 	go send(ch)
 
-	go receive(ch)
+	receive(ch)
 
 	fmt.Println("about to exit")
 

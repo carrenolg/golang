@@ -13,10 +13,23 @@ func main() {
 		close(c)
 	}()
 
-	// receive	
+	// receive
 	for v := range c {
 		fmt.Println(v)
 	}
+
+	// other way
+	/*fmt.Println(<-c)
+	fmt.Println(<-c)
+	fmt.Println(<-c)
+	fmt.Println(<-c)
+	fmt.Println(<-c)
+
+	fmt.Println(<-c)
+	fmt.Println(<-c)
+	fmt.Println(<-c)
+	fmt.Println(<-c)
+	fmt.Println(<-c)*/
 
 	fmt.Println("exit about the program")
 }
