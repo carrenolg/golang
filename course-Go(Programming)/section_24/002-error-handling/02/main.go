@@ -3,10 +3,13 @@ package main
 import "fmt"
 
 func main() {
+	// variables declaration
 	var answer1, answer2, answer3 string
+	var err error
 
+	// fmt.Scan : using for input
 	fmt.Print("Name:")
-	_, err := fmt.Scan(&answer1)
+	_, err = fmt.Scan(&answer1)
 	if err != nil {
 		panic(err)
 	}
@@ -17,7 +20,7 @@ func main() {
 		panic(err)
 	}
 
-	fmt.Print("Name:")
+	fmt.Print("Fav sport:")
 	_, err = fmt.Scan(&answer3)
 	if err != nil {
 		panic(err)
