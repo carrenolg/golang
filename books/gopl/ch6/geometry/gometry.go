@@ -1,11 +1,12 @@
 package geometry
 
 import (
-	"fmt"
 	"math"
 )
 
 type Point struct{ X, Y float64 }
+
+type Path []Point // Named type
 
 // traditional function
 func Distance(p, q Point) float64 {
@@ -17,16 +18,12 @@ func (p Point) Distance(q Point) float64 {
 	return math.Hypot(q.X-p.X, q.Y-p.Y)
 }
 
-func main() {
-	// implementation
-	p := Point{1, 2}
-	q := Point{4, 6}
-	fmt.Println(Distance(p, q)) // function call
-	fmt.Println(p.Distance(q))  // mathod call
+func (path Path) Distance() float64 {
+	sum := 0.0
+	for i := range path {
+		if i > 0 {
+			sum += path[i-1].Distance(path[i])
+		}
+	}
+	return sum
 }
-
-/*
-Terminology
-
-receiver: use to call to a method
-*/
