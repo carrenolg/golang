@@ -18,6 +18,7 @@ func (p Point) Distance(q Point) float64 {
 	return math.Hypot(q.X-p.X, q.Y-p.Y)
 }
 
+// Distance: method of type Path
 func (path Path) Distance() float64 {
 	sum := 0.0
 	for i := range path {
@@ -26,4 +27,11 @@ func (path Path) Distance() float64 {
 		}
 	}
 	return sum
+}
+
+// ScaleBy: method of type Point
+// Method name: (*Point).ScaleBy
+func (p *Point) ScaleBy(factor float64) {
+	p.X *= factor
+	p.Y *= factor
 }
