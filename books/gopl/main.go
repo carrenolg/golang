@@ -2,13 +2,16 @@ package main
 
 import (
 	"fmt"
+	"image/color"
 
 	"carrenolg.io/books/gopl/ch6/geometry"
+	"carrenolg.io/books/gopl/ch6/intlist"
+	"carrenolg.io/books/gopl/ch6/urlvalues"
 )
 
 func main() {
 	fmt.Println("6 .Methods")
-	fmt.Println("6.1 Methods Declarations")
+	fmt.Println("\n\n6.1 Methods Declarations")
 	// type Point
 	p := geometry.Point{
 		X: 1,
@@ -41,7 +44,7 @@ func main() {
 	fmt.Println(geometry.Path.Distance(perim)) // standalone function
 	fmt.Println(perim.Distance())              // method of geometry.Path
 
-	fmt.Println("6.2 Methods with a Pointer Receiver")
+	fmt.Println("\n\n6.2 - Methods with a Pointer Receiver")
 	// method calls
 	r := &geometry.Point{
 		X: 1,
@@ -84,10 +87,12 @@ func main() {
 	fmt.Println(*y)
 
 	// compile error
-	/*geometry.Point{
-		X: 1,
-		Y: 2,
-	}.ScaleBy(2)*/
+	/*
+		geometry.Point{
+			X: 1,
+			Y: 2,
+		}.ScaleBy(2)
+	*/
 
 	// Receiver Arguments vs. Receiver Parameters
 	a := geometry.Point{
@@ -114,4 +119,54 @@ func main() {
 	// Check types
 	fmt.Printf("%T\n", aptr)
 	fmt.Printf("%T\n", &bval)
+
+	fmt.Println("\n\n6.2.1 - Nil is a Valid Receiver Value")
+	// Wow
+	l := intlist.IntList{
+		Value: 5,
+	}
+	k := intlist.IntList{
+		Value: 20,
+		Tail:  &l,
+	}
+	j := intlist.IntList{
+		Value: 75,
+		Tail:  &k,
+	}
+	fmt.Println(j.Sum())
+
+	// urlvalues
+	urlvalues.Run()
+
+	// Composing Types
+	fmt.Println("\n\n6.3 - Composing Types by Struct Embedding")
+
+	var cp geometry.ColoredPoint
+	cp.X = 1
+	fmt.Println(cp.Point.X)
+	cp.Y = 2
+	fmt.Println(cp.Y) // select field (Y) without mentioning Point
+
+	red := color.RGBA{255, 0, 0, 255}
+	blue := color.RGBA{0, 0, 255, 255}
+	var cp1 = geometry.ColoredPoint{
+		geometry.Point{
+			X: 1,
+			Y: 1,
+		},
+		red,
+	}
+
+	var cp2 = geometry.ColoredPoint{
+		geometry.Point{
+			X: 5,
+			Y: 4,
+		},
+		blue,
+	}
+	// Check methods promoted
+	fmt.Println("Distance:", cp1.Distance(cp2.Point))
+	cp1.ScaleBy(2)
+	cp2.ScaleBy(2)
+	fmt.Println("Distance:", cp1.Distance(cp2.Point))
 }
