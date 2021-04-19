@@ -10,8 +10,14 @@ type Point struct{ X, Y float64 }
 type Path []Point // Named type
 
 type ColoredPoint struct {
-	Point // embedded field
+	Point // embedded field and anonymous field
 	Color color.RGBA
+}
+
+// Using Pointer
+type ColoredPointPointer struct {
+	*Point // embedded field and anonymous field
+	Color  color.RGBA
 }
 
 // traditional function

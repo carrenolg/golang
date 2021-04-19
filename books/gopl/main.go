@@ -141,32 +141,26 @@ func main() {
 	// Composing Types
 	fmt.Println("\n\n6.3 - Composing Types by Struct Embedding")
 
+	//
 	var cp geometry.ColoredPoint
 	cp.X = 1
 	fmt.Println(cp.Point.X)
 	cp.Y = 2
-	fmt.Println(cp.Y) // select field (Y) without mentioning Point
+	fmt.Println(cp.Y) // select field (Y) without mentioning Point*/
 
 	red := color.RGBA{255, 0, 0, 255}
 	blue := color.RGBA{0, 0, 255, 255}
-	var cp1 = geometry.ColoredPoint{
-		geometry.Point{
-			X: 1,
-			Y: 1,
-		},
-		red,
-	}
 
-	var cp2 = geometry.ColoredPoint{
-		geometry.Point{
-			X: 5,
-			Y: 4,
-		},
-		blue,
-	}
+	cp1 := geometry.ColoredPoint{&geometry.Point{1, 1}, red}
+	cp2 := geometry.ColoredPoint{&geometry.Point{5, 4}, blue}
+
+	// fmt.Println(cp1, cp2)
 	// Check methods promoted
-	fmt.Println("Distance:", cp1.Distance(cp2.Point))
+	fmt.Println("Distance:", cp1.Distance(*cp2.Point))
+
+	// share common structures and
+	// vary relationships between objects dynamically
+	cp2.Point = cp1.Point
 	cp1.ScaleBy(2)
-	cp2.ScaleBy(2)
-	fmt.Println("Distance:", cp1.Distance(cp2.Point))
+	fmt.Println(*cp1.Point, *cp2.Point)
 }
