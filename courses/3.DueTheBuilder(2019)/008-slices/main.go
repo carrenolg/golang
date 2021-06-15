@@ -1,0 +1,49 @@
+package main
+
+import "fmt"
+
+func main() {
+	// slices declaration
+	var s []int // nil
+	imprime(s, "s")
+	// slice literal
+	var p = []int{1, 2, 3}
+	imprime(p, "p")
+	// literal empty, no nil
+	var q = []int{}
+	imprime(q, "q")
+
+	// create new slice from slice
+	var a = []int{0, 1, 2, 3, 4, 5}
+	imprime(a, "a")
+	b := a[1:5] // get index 1 to 4
+	imprime(b, "b")
+	c := a[:] // get all index
+	imprime(c, "c")
+
+	// childs and parents sharing same array base
+	var parent = []int{10, 20, 30, 40, 50}
+	imprime(parent, "parent")
+	child := parent[0:2] // get first two elements
+	imprime(child, "child")
+	parent[1] = 200000
+	// if change the parent, then the child too
+	imprime(parent, "parent")
+	imprime(child, "child")
+
+	// capacity of slice
+
+}
+
+func imprime(s []int, n string) {
+	fmt.Println("******************************")
+	fmt.Printf("slice %s, len: %d, cap: %d, nil: %t\n", n, len(s), cap(s), s == nil)
+	fmt.Print("{")
+	for i, v := range s {
+		if i > 0 {
+			fmt.Print(", ")
+		}
+		fmt.Printf("%d: %v", i, v)
+	}
+	fmt.Println("}")
+}
