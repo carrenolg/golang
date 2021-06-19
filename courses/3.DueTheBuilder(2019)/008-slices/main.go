@@ -62,7 +62,7 @@ func main() {
 	fmt.Println("\nLab #######")
 
 	// reference to an underlying array
-	// slice has its own reference, this isn't same to underlying array
+	// slice has its own reference, which it isn't same to underlying array
 	var r = []int{15, 25, 35, 45, 55}
 	f := r[1:3]
 	fmt.Printf("ref(r): %p\n", &r) // slice self-reference
