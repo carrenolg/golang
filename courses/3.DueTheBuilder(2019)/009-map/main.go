@@ -2,6 +2,8 @@ package main
 
 import "fmt"
 
+type Point int
+
 func main() {
 	// map
 	// declaration
@@ -34,21 +36,23 @@ func main() {
 
 	// delete item
 	delete(i, "c")
-	fmt.Println(i["a"], i["b"], i["c"], i["d"])
+	fmt.Println(i["a"], i["b"], i["c"], i["d"], i["z"])
+
+	imprime(i, "i")
 
 	// check item exist
 	e, ok := i["c"]
 	fmt.Println(e, ok) // false
 
-	// behaivor map nil or no init
+	// behaivor map nil or no init, but declared
 	var w map[string]int
 	fmt.Println(w["a"], len(w)) // 0 0
 	//>> w["b"] = 15                 // runtime error
 
 	// notes
-	//1. if item no exist return the zero value of item
-	//2. map's keys are not sorted
-	//3. make is using for map initialitation
+	//1. if a item has no exist return the zero value of type
+	//2. map's keys are not sorted, but you can use the sorted func
+	//3. make is using for map initialitation or creation
 
 }
 
