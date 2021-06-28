@@ -5,9 +5,8 @@ import "fmt"
 // package scope
 var y = 5
 
-// main scope
 func main() {
-	// sub-scope
+	// block scope
 	{
 		x := 1
 		fmt.Println(x)
@@ -16,7 +15,7 @@ func main() {
 
 	// pointers
 	// get memory address
-	p := &y
+	p := &y //
 	fmt.Println(p)
 
 	// get value (dereference)
@@ -28,10 +27,12 @@ func main() {
 
 	// inpect pointer
 	fmt.Println(y, &y, p, *p)
+	fmt.Printf("%T\n", y)
 	fmt.Printf("%T\n", p)
 
 	// scope
-	var rpointer *int
+	// declaration pointer
+	var rpointer *int // nil
 	{
 		r := 10
 		fmt.Println("r in scope", r)
@@ -39,8 +40,9 @@ func main() {
 		rpointer = &r
 	}
 	fmt.Println("r out scope", *rpointer)
+
 	// Lab
-	var q *int
+	var q *int     // declaration
 	fmt.Println(q) // nil
 
 }
