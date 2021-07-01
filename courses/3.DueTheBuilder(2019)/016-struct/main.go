@@ -37,6 +37,7 @@ func main() {
 	fmt.Printf("%#v \n", w)
 	w2 := Wheel{Circle: Circle{Center: Point{X: 5, Y: 5}, Radius: 5.5}, Ray: 15}
 	fmt.Printf("%#v \n", w2)
+	fmt.Printf("%#v \n", w2.Circle.Center.X)
 	fmt.Printf("%#v \n", w2.Center.X) // short access to X
 
 	// compare struct
