@@ -105,9 +105,9 @@ func main() {
 	}
 
 	// Parameter T, Argument *T
-	aptr := &a                // &a = return a memory address (pointer)
-	dis := aptr.Distance(b)   // implicit adds (*aptr) Dereference, load values
-	dis = (*aptr).Distance(b) // Check
+	aptr := &a // &a = return a memory address (pointer)
+	//dis := aptr.Distance(b)   // implicit adds (*aptr) Dereference, load values
+	dis := (*aptr).Distance(b) // Check
 	fmt.Println(dis)
 
 	// Parameter *T, Argument T
@@ -151,16 +151,28 @@ func main() {
 	red := color.RGBA{255, 0, 0, 255}
 	blue := color.RGBA{0, 0, 255, 255}
 
-	cp1 := geometry.ColoredPoint{&geometry.Point{1, 1}, red}
-	cp2 := geometry.ColoredPoint{&geometry.Point{5, 4}, blue}
+	cp1 := geometry.ColoredPoint{
+		Point: geometry.Point{
+			X: 1,
+			Y: 1,
+		},
+		Color: red,
+	}
+	cp2 := geometry.ColoredPoint{
+		Point: geometry.Point{
+			X: 5,
+			Y: 4,
+		},
+		Color: blue,
+	}
 
 	// fmt.Println(cp1, cp2)
 	// Check methods promoted
-	fmt.Println("Distance:", cp1.Distance(*cp2.Point))
+	fmt.Println("Distance:", cp1.Distance(cp2.Point))
 
 	// share common structures and
 	// vary relationships between objects dynamically
 	cp2.Point = cp1.Point
 	cp1.ScaleBy(2)
-	fmt.Println(*cp1.Point, *cp2.Point)
+	fmt.Println(cp1.Point, cp2.Point)
 }
