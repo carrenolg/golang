@@ -19,6 +19,13 @@ func main() {
 	// channels
 	dobles := make(chan int)
 	triples := make(chan int)
+	var cancela chan struct{}
+	// event
+	go func() {
+		time.Sleep(5 * time.Second)
+		cancela = make(chan struct{})
+		cancela <- struct{}{}
+	}()
 
 	go func() {
 		for i := 0; i < 10; i++ {
@@ -44,6 +51,10 @@ loop:
 				break loop
 			}
 			fmt.Println(i, " ")
+		// get notification
+		case <-cancela:
+			fmt.Println("Cancelado!")
+			break loop
 		}
 	}
 }
