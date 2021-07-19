@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sync"
 )
 
 var path string = "/home/gio10/Documents/books"
@@ -15,9 +16,12 @@ var books = map[string]string{
 	"quijote": path + "/don-quijote.txt",
 }
 
+var mu sync.Mutex
 var words = make(map[string]int)
 
 func wordCounter(path string) {
+	defer wg.Done()
+
 	f, err := os.Open(path)
 	if err != nil {
 		log.Println(err)
@@ -30,7 +34,9 @@ func wordCounter(path string) {
 	scanner.Split(bufio.ScanWords)
 
 	for scanner.Scan() {
+		mu.Lock()
 		words[scanner.Text()]++
+		mu.Unlock()
 	}
 
 	if err := scanner.Err(); err != nil {
@@ -39,14 +45,18 @@ func wordCounter(path string) {
 
 }
 
+var wg sync.WaitGroup
+
 func main() {
 	// mutex
 	for i := 0; i < 10; i++ {
 		for _, file := range books {
-			wordCounter(file)
+			wg.Add(1)
+			go wordCounter(file)
 		}
 	}
 
+	wg.Wait()
 	for w, count := range words {
 		fmt.Printf("word: %s, count: %d\n", w, count)
 	}
