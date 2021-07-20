@@ -23,7 +23,7 @@ func main() {
 				if !ok {
 					x = 0
 				}
-				fmt.Println(doble(x.(int)))
+				fmt.Println(doble(x.(int))) // type assertion
 			}
 		}(i)
 	}
