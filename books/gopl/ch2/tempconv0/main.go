@@ -19,9 +19,17 @@ func FtoC(f Fahrenheit) Celsius {
 	return Celsius((f - 32) * 5 / 9) // conversion
 }
 
+// method
+func (c Celsius) String() string {
+	return fmt.Sprintf("%g°C", c)
+}
+
 func main() {
 	var t1 Celsius = 50.0
 	var t2 Fahrenheit = 315.6
 	fmt.Printf("%2.f°F, %2.f°C\n", CtoF(t1), FtoC(t2))
-	//
+	// Printable
+	c := FtoC(212.0)
+	fmt.Println(c)
+
 }
