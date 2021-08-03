@@ -18,5 +18,5 @@ func main() {
 	done := make(chan bool)
 	go worker(done)
 
-	<-done
+	<-done // block the main function
 }
