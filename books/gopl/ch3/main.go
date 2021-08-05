@@ -1,6 +1,13 @@
 package main
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
+
+func HasPrefix(s, prefix string) bool {
+	return len(s) >= len(prefix) && s[:len(prefix)] == prefix
+}
 
 func main() {
 	// overflow
@@ -64,9 +71,73 @@ func main() {
 	fmt.Printf("%d %[1]x %#[1]x %#[1]X\n", h)
 	// rune
 	ascii := 'a'
-	unicode := 'ㅏ'
+	unicode := 'ㅂ'
 	newline := '\n'
 	fmt.Printf("%d %[1]c %#[1]q\n", ascii)
 	fmt.Printf("%d %[1]c %#[1]q\n", unicode)
 	fmt.Printf("%d %#[1]q\n", newline)
+
+	// float
+	var f float32 = 16777216
+	fmt.Println(f == f+1)
+	fmt.Println(1 << 24)
+
+	// sci notation
+	const Planck = 6.62606957e23
+	fmt.Println(Planck)
+
+	// verb
+	for i := 0; i < 8; i++ {
+		fmt.Printf("x = %d e^x = %.3f\n", i, math.Exp(float64(i)))
+	}
+
+	// special values
+	var z float64
+	fmt.Println(z, -z, 1/z, -1/z)
+
+	// complex numbers
+	var c1 complex128 = complex(1, 2)
+	var c2 complex128 = complex(3, 4)
+	fmt.Println(c1 * c2)
+	fmt.Println(real(c1 * c2))
+	fmt.Println(imag(c1 * c2))
+
+	// strings
+	str := "español"      // letras 7
+	fmt.Println(len(str)) // "8"
+	fmt.Println(str[0], str[7])
+
+	// sub-string
+	fmt.Println(str[0:2]) // "es"
+
+	// string literals
+	lit := "hello, world"
+	fmt.Println(lit)
+
+	// scape sequences
+	fmt.Println("alert", "\a")
+
+	// raw literal
+	raw := `Hello
+	world`
+	fmt.Println(raw)
+
+	// unicode
+	symbol := '世'
+	code := '\u4e16'
+	code2 := '\U00004e16'
+	fmt.Println(symbol) // "19990"
+	fmt.Println(code)   // "19990"
+	fmt.Println(code2)  // "19990"
+
+	fmt.Printf("%b\n", code2) // "100111000010110"
+
+	// A
+	letter_a := '\x41'                   // hexa
+	fmt.Println(letter_a)                // "65" int32
+	fmt.Printf("%b\n", letter_a)         // "1000001" byte
+	fmt.Printf("%s\n", string(letter_a)) // "A" string
+
+	// check
+	fmt.Println(HasPrefix("hola!", "ola"))
 }
