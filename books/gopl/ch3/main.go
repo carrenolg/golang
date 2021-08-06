@@ -3,10 +3,24 @@ package main
 import (
 	"fmt"
 	"math"
+	"unicode/utf8"
 )
 
 func HasPrefix(s, prefix string) bool {
 	return len(s) >= len(prefix) && s[:len(prefix)] == prefix
+}
+
+func HasSuffix(s, suffix string) bool {
+	return len(s) >= len(suffix) && s[len(s)-len(suffix):] == suffix
+}
+
+func Contains(s, substr string) bool {
+	for i := 0; i < len(s); i++ {
+		if HasPrefix(s[i:], substr) {
+			return true
+		}
+	}
+	return false
 }
 
 func main() {
@@ -123,6 +137,7 @@ func main() {
 	fmt.Println(raw)
 
 	// unicode
+	// rune literals // "\uXXXX"
 	symbol := '世'
 	code := '\u4e16'
 	code2 := '\U00004e16'
@@ -132,12 +147,29 @@ func main() {
 
 	fmt.Printf("%b\n", code2) // "100111000010110"
 
+	// escape secuences
 	// A
-	letter_a := '\x41'                   // hexa
+	letter_a := '\x41'                   // hexa escape
 	fmt.Println(letter_a)                // "65" int32
 	fmt.Printf("%b\n", letter_a)         // "1000001" byte
 	fmt.Printf("%s\n", string(letter_a)) // "A" string
 
 	// check
-	fmt.Println(HasPrefix("hola!", "ola"))
+	fmt.Println(HasPrefix("maracuya", "mara")) // "true"
+
+	fmt.Println(HasSuffix("maracuya", "mara")) // "false"
+
+	fmt.Println(Contains("hola", "ola")) // "true"
+
+	// runes
+	s := "Hello, 世界"
+	fmt.Println(len(s))
+	fmt.Println(utf8.RuneCountInString(s))
+
+	// get bytes from each runes
+	for i := 0; i < len(s); {
+		r, size := utf8.DecodeRuneInString(s[i:])
+		fmt.Printf("%d\t%c\t%d\n", i, r, r)
+		i += size
+	}
 }
