@@ -166,10 +166,64 @@ func main() {
 	fmt.Println(len(s))
 	fmt.Println(utf8.RuneCountInString(s))
 
-	// get bytes from each runes
+	// utf8 decoder
 	for i := 0; i < len(s); {
 		r, size := utf8.DecodeRuneInString(s[i:])
 		fmt.Printf("%d\t%c\t%d\n", i, r, r)
 		i += size
 	}
+
+	// range support utf-8 decoding implicitly
+	for i, r := range s {
+		fmt.Printf("%d\t%q\t%x\n", i, r, r)
+	}
+
+	// unexpected input byte
+	unex := '\uFFFD'
+	fmt.Printf("%q\n", unex)
+
+	// utf-8 bytes vs. runes
+	text := "Dios"
+	fmt.Printf("% x\n", text)
+	r := []rune(text)
+	fmt.Printf("%x\n", r)
+	// converting to string
+	fmt.Println(string(text))
+	fmt.Println(string(r))
+
+	korean := "바다"
+	fmt.Printf("% x\n", korean)
+	coding := []rune(korean)
+	fmt.Printf("korean: %x\n", coding)
+
+	esp := "hola"
+	fmt.Printf("% x\n", esp)
+	coding_esp := []rune(esp)
+	fmt.Printf("español: %x\n", coding_esp)
+
+	// unicode pure
+	str_value := "g" // string value
+	int_value := 103 // int value
+	uint8_value := uint8(103)
+	//fmt.Printf("%b\n", bits_value)  // "1100111"
+	byte_value := byte(103) // "[103]"
+	hex := "\x67"           // hexa escape secuense (utf8 encoding)
+	g_unicode := '\u0067'   // unicode
+
+	fmt.Println(
+		str_value,
+		hex,
+		string(g_unicode),
+		string(rune(int_value)),
+		string(uint8_value),
+		string(byte_value),
+	)
+
+	// playing with unicode
+	hexa := 0x67            // hexa literal
+	fmt.Println(hexa)       // "103"
+	fmt.Println(byte(hexa)) // "103"
+	fmt.Println(rune(hexa)) // "103"
+	fmt.Println(string(rune(hexa)))
+	fmt.Printf("%o\n", hexa)
 }
