@@ -220,10 +220,17 @@ func main() {
 	)
 
 	// playing with unicode
-	hexa := 0x67            // hexa literal
-	fmt.Println(hexa)       // "103"
-	fmt.Println(byte(hexa)) // "103"
-	fmt.Println(rune(hexa)) // "103"
-	fmt.Println(string(rune(hexa)))
-	fmt.Printf("%o\n", hexa)
+	hexa := 0x67                    // hexa literal
+	fmt.Println(hexa)               // "103"
+	fmt.Println(byte(hexa))         // "103"
+	fmt.Println(rune(hexa))         // "103"
+	fmt.Println(string(rune(hexa))) // "g"
+	fmt.Printf("%o %[1]x\n", hexa)  // "147 67"
+
+	// rune
+	var rn rune = 103
+	fmt.Println(rn)         // "103"
+	fmt.Println(string(rn)) // "g"
+	var rc rune = 'g'
+	fmt.Println(rc) // "103"
 }
