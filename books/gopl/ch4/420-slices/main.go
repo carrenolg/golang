@@ -3,6 +3,8 @@ package main
 import (
 	"bytes"
 	"fmt"
+
+	"carrenolg.io/books/gopl/ch4/appendint"
 )
 
 func main() {
@@ -69,4 +71,27 @@ func main() {
 
 	// other way
 	fmt.Printf("%q\n", []rune("Hello, Go")) // "['H' 'e' 'l' 'l' 'o' ',' ' ' 'G' 'o']"
+
+	// copy: built-in function
+	underArray := [10]int{9: 10, 5: 10}
+	dst := underArray[0:2]
+	src := underArray[0:6]
+	copy(dst, src)
+	// fmt.Println(elements) // "2"
+	fmt.Println(dst) // "[0 0]"
+	fmt.Println(src) // "[0 0 0 0 0 10]"
+
+	// appendInt
+	s := make([]int, 1, 2)
+	s[0] = 10
+	fmt.Println(s) // "[10]"
+	s = appendint.AppendInt(s, 2)
+	fmt.Println(s, len(s), cap(s)) // "[10 2] 2 2"
+
+	var x, y []int
+	for i := 0; i < 10; i++ {
+		y = appendint.AppendInt(x, i)
+		fmt.Printf("%d cap=%d \t%v\n", i, cap(y), y)
+		x = y
+	}
 }
