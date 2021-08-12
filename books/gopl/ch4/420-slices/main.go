@@ -7,6 +7,22 @@ import (
 	"carrenolg.io/books/gopl/ch4/appendint"
 )
 
+func nonempty(strings []string) []string {
+	i := 0
+	for _, s := range strings {
+		if s != "" {
+			strings[i] = s
+			i++
+		}
+	}
+	return strings[:i]
+}
+
+func remove(slice []int, i int) []int {
+	copy(slice[i:], slice[i+1:])
+	return slice[:len(slice)-1]
+}
+
 func main() {
 	// underlying array
 	months := [...]string{
@@ -74,8 +90,8 @@ func main() {
 
 	// copy: built-in function
 	underArray := [10]int{9: 10, 5: 10}
-	dst := underArray[0:2]
-	src := underArray[0:6]
+	dst := underArray[5:]
+	src := underArray[5+1:]
 	copy(dst, src)
 	// fmt.Println(elements) // "2"
 	fmt.Println(dst) // "[0 0]"
@@ -94,4 +110,32 @@ func main() {
 		fmt.Printf("%d cap=%d \t%v\n", i, cap(y), y)
 		x = y
 	}
+
+	// append
+	var n []int
+	n = append(n, 1)
+	n = append(n, 1, 2)
+	n = append(n, n...)
+	fmt.Println(n) // "[1 1 2 1 1 2]"
+
+	// 4.2.2 In-Place Slice
+	fmt.Println("// 4.2.2 In-Place Slice")
+
+	// slice is change in-place
+	data := []string{"one", "", "three"}
+	fmt.Printf("%q\n", nonempty(data)) // ["one" "three"]
+	fmt.Printf("%q\n", data)           // ["one" "three" "three"]
+
+	// slices like stack
+	stack := []int{20}
+	stack = append(stack, 10) // push
+	// get top
+	top := stack[len(stack)-1]
+	fmt.Println(top) // "10"
+	// pop
+	stack = stack[:len(stack)-1] // pop 10
+	fmt.Println(stack)           // "[20]"
+	// remove
+	r := []int{5, 6, 7, 8, 9}
+	fmt.Println(remove(r, 2)) // "[5 6 8 9]"
 }
