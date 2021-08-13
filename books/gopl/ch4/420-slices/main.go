@@ -138,4 +138,13 @@ func main() {
 	// remove
 	r := []int{5, 6, 7, 8, 9}
 	fmt.Println(remove(r, 2)) // "[5 6 8 9]"
+
+	// laboratory
+
+	/*z1 := z[0:2]
+	z2 := z[2:]
+	fmt.Println(z, z1, z2)
+	c1, c2 := copy(z[0:4], z2), copy(z[3:], z1)
+	fmt.Println(c1, c2)
+	fmt.Println(z, z1, z2)*/
 }

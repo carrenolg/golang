@@ -35,5 +35,8 @@ func main() {
 	fmt.Println(s) // "[2 3 4 5 0 1]"
 
 	// rotate simple pass (Exercise 4.4)
+	r := []int{0, 1, 2, 3, 4, 5}
 
+	fmt.Println("v2", r)
+	fmt.Println(len(r), cap(r))
 }
