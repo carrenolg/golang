@@ -55,8 +55,6 @@ func main() {
 	fmt.Println("len", len(slice1)) // "3"
 	fmt.Println("cap", cap(slice1)) // "9"
 
-	// note: capacity is related to the numbers elements of underlying array
-
 	// slices not comparable between them
 	// only with nil
 	a := []int{1}
@@ -140,11 +138,12 @@ func main() {
 	fmt.Println(remove(r, 2)) // "[5 6 8 9]"
 
 	// laboratory
-
-	/*z1 := z[0:2]
-	z2 := z[2:]
-	fmt.Println(z, z1, z2)
-	c1, c2 := copy(z[0:4], z2), copy(z[3:], z1)
-	fmt.Println(c1, c2)
-	fmt.Println(z, z1, z2)*/
+	base := [6]int{0, 1, 2, 3, 4, 5}
+	s1 := base[0:3]
+	fmt.Println(s1, len(s1), cap(s1)) // "[0 1 2] 3 6"
+	s1 = append(s1, 10)               // no extend cap
+	fmt.Println(s1, len(s1), cap(s1)) // "[0 1 2 10] 4 6"
+	// update underlying array
+	base[0] = 1
+	fmt.Println(s1, len(s1), cap(s1)) // "[1 1 2 10] 4 6"
 }

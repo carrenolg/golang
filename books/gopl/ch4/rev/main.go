@@ -36,7 +36,9 @@ func main() {
 
 	// rotate simple pass (Exercise 4.4)
 	r := []int{0, 1, 2, 3, 4, 5}
-
-	fmt.Println("v2", r)
-	fmt.Println(len(r), cap(r))
+	r2 := make([]int, len(r))
+	n, m := copy(r2[0:4], r[2:]), copy(r2[4:], r[0:2])
+	fmt.Println(n, m)
+	fmt.Println(r)
+	fmt.Println(r2)
 }
