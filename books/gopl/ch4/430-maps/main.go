@@ -5,6 +5,20 @@ import (
 	"sort"
 )
 
+var mg = make(map[string]int)
+
+func k(list []string) string {
+	return fmt.Sprintf("%q", list)
+}
+
+func Add(list []string) {
+	mg[k(list)]++
+}
+
+func Count(list []string) int {
+	return mg[k(list)]
+}
+
 func main() {
 	// def: maps is a reference a hash table
 	// map operations
@@ -80,4 +94,12 @@ func main() {
 	} else {
 		fmt.Println(ok, age) // "flase 0"
 	}
+
+	// slices like keys of a map, umm
+	key := []string{"h", "e", "l", "l", "o"}
+	Add(key)
+	Add(key)
+	fmt.Println(Count(key)) // "2"
+	fmt.Println(mg)         // "map[["h" "e" "l" "l" "o"]:2]"
+
 }
