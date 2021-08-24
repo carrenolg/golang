@@ -6,6 +6,7 @@ import (
 
 	"carrenolg.io/books/gopl/ch6/geometry"
 	"carrenolg.io/books/gopl/ch6/intlist"
+	"carrenolg.io/books/gopl/ch6/intset"
 	"carrenolg.io/books/gopl/ch6/urlvalues"
 )
 
@@ -175,4 +176,74 @@ func main() {
 	cp2.Point = cp1.Point
 	cp1.ScaleBy(2)
 	fmt.Println(cp1.Point, cp2.Point)
+
+	// 6.4 Method Values and Expressions
+	fmt.Println("\n\n6.4 Method Values and Expressions")
+
+	// method value (p.Distance)
+	p = geometry.Point{
+		X: 1,
+		Y: 2,
+	}
+	q = geometry.Point{
+		X: 4,
+		Y: 6,
+	}
+
+	// receiver "p" is binding to the function "distanceFromP"
+	distanceFromP := p.Distance   // method value
+	fmt.Println(distanceFromP(q)) // "5"
+
+	var origin geometry.Point
+	fmt.Println(distanceFromP(origin)) // "2.23606797749979" (sqrt(5))
+	fmt.Printf("%T\n", distanceFromP)  // "func(Point) float64" signature
+
+	// method expression (Point.Distance)
+	p = geometry.Point{
+		X: 1,
+		Y: 2,
+	}
+	q = geometry.Point{
+		X: 4,
+		Y: 6,
+	}
+
+	distance := geometry.Point.Distance // method expression
+	fmt.Println(distance(p, q))         // "5"
+	fmt.Printf("%T\n", distance)        // "func(Point, Point) float64"
+
+	scale := (*geometry.Point).ScaleBy
+	scale(&p, 2)
+	fmt.Println(p)            // "{2 4}"
+	fmt.Printf("%T\n", scale) // "func(*Point, float64)"
+
+	// Example:
+	x1 := geometry.Point{
+		X: 1,
+		Y: 2,
+	}
+	x2 := geometry.Point{
+		X: 2,
+		Y: 4,
+	}
+
+	path := geometry.Path{
+		0: x1,
+		1: x2,
+	}
+	fmt.Println(path.Distance()) // "2.23606797749979"
+	// add
+	x3 := geometry.Point{
+		X: 4,
+		Y: 8,
+	}
+	path.TranslateBy(x3, true)
+	fmt.Println(path)
+
+	// IntSet
+	var setint intset.IntSet
+	fmt.Println(setint)
+	setint.Add(10)
+	setint.Add(5)
+	fmt.Println(setint.Has(5))
 }
