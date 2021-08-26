@@ -36,6 +36,8 @@ func main() {
 
 	// asserts at compile time that a value of type
 	// *bytes.Buffer satisfy io.Writer
-	var wr io.Writer = new(bytes.Buffer)
+	var wr = new(bytes.Buffer)
 	fmt.Printf("%T\n", wr)
+	wr.Write([]byte("hello"))
+	fmt.Println(&wr)
 }
