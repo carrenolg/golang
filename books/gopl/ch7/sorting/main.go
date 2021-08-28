@@ -118,6 +118,7 @@ func main() {
 			return x.Album < y.Album
 		}
 		return false
+		//return x.Title < y.Title
 	}
 	custom := customSort{
 		t:    tracks,
