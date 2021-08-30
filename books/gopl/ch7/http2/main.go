@@ -23,11 +23,20 @@ func (db database) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	case "/price":
 		item := req.URL.Query().Get("item")
 		price, ok := db[item]
+		if !ok {
+			w.WriteHeader(http.StatusNotFound) // 404
+			fmt.Fprintf(w, "no such item: %q\n", item)
+			return
+		}
+		fmt.Fprintf(w, "%s\n", price)
+	default:
+		w.WriteHeader(http.StatusNotFound) // 404
+		fmt.Fprintf(w, "no such page or Url: %s\n", req.URL)
 	}
 }
 
 func main() {
-	// http1
+	// http2
 	db := database{
 		"shoes": 50,
 		"socks": 5,
