@@ -3,6 +3,7 @@ package controllers
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/carrenolg/go-mongo/models"
@@ -59,7 +60,10 @@ func (uc UserController) CreateUser(w http.ResponseWriter, r *http.Request, _ ht
 
 	// data
 	user.Id = bson.NewObjectId()
-	uc.session.DB("mongo-golang").C("user").Insert(user)
+	err := uc.session.DB("mongo-golang").C("users").Insert(user)
+	if err != nil {
+		log.Println(err)
+	}
 
 	// encoding data
 	data, err := json.Marshal(user)
@@ -71,4 +75,24 @@ func (uc UserController) CreateUser(w http.ResponseWriter, r *http.Request, _ ht
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusCreated)
 	fmt.Fprintf(w, "%s\n", data)
+}
+
+func (uc UserController) DeleteUser(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+
+	id := p.ByName("id")
+
+	// check
+	if !bson.IsObjectIdHex(id) {
+		w.WriteHeader(404)
+		return
+	}
+
+	objectId := bson.ObjectIdHex(id)
+
+	if err := uc.session.DB("mongo-golang").C("users").RemoveId(objectId); err != nil {
+		w.WriteHeader(404)
+	}
+
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprint(w, "Deleted user", objectId, "\n")
 }
