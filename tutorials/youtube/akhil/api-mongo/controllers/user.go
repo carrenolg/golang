@@ -29,6 +29,7 @@ func (uc UserController) GetUser(w http.ResponseWriter, r *http.Request, p httpr
 	// validation request
 	if !bson.IsObjectIdHex(id) {
 		w.WriteHeader(http.StatusNotFound)
+		return
 	}
 
 	// user data
