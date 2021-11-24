@@ -21,7 +21,13 @@ func ArticleHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	r := mux.NewRouter()
 	// Attach a path with handler
-	r.HandleFunc("/articles/{category}/{id:[0-9]+}", ArticleHandler)
+	r.HandleFunc("/articles/{category}/{id:[0-9]+}", ArticleHandler).Name("articleRoute")
+	url, err := r.Get("articleRoute").URL("category", "books", "id", "123")
+	if err != nil {
+		log.Fatal(err)
+	}
+	fmt.Println(url)
+
 	// Server
 	srv := &http.Server{
 		Handler: r,
