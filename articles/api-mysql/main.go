@@ -18,7 +18,7 @@ func main() {
 	// create the db instance using valid db connection string
 	cmd := "mysql"
 	db, err := sqlx.Connect(cmd,
-		"dev:admin@tcp(172.19.0.2:3306)/web?parseTime=true")
+		"dev:admin@tcp(172.19.0.3:3306)/web?parseTime=true")
 	if err != nil {
 		log.Fatalln(err.Error())
 	}
