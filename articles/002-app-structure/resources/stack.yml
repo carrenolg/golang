@@ -1,0 +1,32 @@
+# Use postgres/admin user/password credentials
+version: '3.1'
+
+services:
+  pgdb:
+    image: postgres:14.1
+    container_name: postgresdb
+    restart: always
+    ports:
+      - 5432:5432 # this port would change according to the image tag
+    environment:
+      POSTGRES_PASSWORD: admin
+      # POSTGRES_DB: weightracker
+    networks:
+      - appweb
+    volumes:
+      - test:/var/lib/postgresql/data
+
+  adminer:
+    image: adminer
+    container_name: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - appweb
+
+networks:
+  appweb:
+
+volumes:
+  test:
