@@ -1,0 +1,22 @@
+# Use postgres/admin user/password credentials
+version: '3.1'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: admin
+    networks:
+      - appweb
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
+    networks:
+      - appweb
+
+networks:
+  appweb:
