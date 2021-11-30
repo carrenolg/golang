@@ -25,7 +25,7 @@ func run() error {
 	// I'm used to working with postgres, but feel free to use any db you like. You just have to change the driver
 	// I'm not going to cover how to create a database here but create a database
 	// and call it something along the lines of "weight tracker"
-	connectionString := "postgres://dev:admin@172.19.0.2:5432/weightracker?sslmode=disable"
+	connectionString := "postgres://dev:admin@172.18.0.3:5432/weightracker?sslmode=disable"
 
 	// setup database connection
 	db, err := setupDatabase(connectionString)
