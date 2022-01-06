@@ -4,3 +4,5 @@ $ go get github.com/justinas/alice
 # Library list
 go get github.com/gorilla/handlers
 go get github.com/gorilla/rpc
+go get github.com/emicklei/go-restful/v3
+go get github.com/mattn/go-sqlite3
