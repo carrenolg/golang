@@ -13,11 +13,11 @@ func Initialize(dbDriver *sql.DB) {
 	// Create train table
 	_, statementError := statement.Exec()
 	if statementError != nil {
-		log.Println("Table already exists.")
+		log.Println("Table already exists!")
 	}
 	statement, _ = dbDriver.Prepare(station)
 	statement.Exec()
 	statement, _ = dbDriver.Prepare(schedule)
 	statement.Exec()
-	log.Println("All tables created/initialized sucessfully.")
+	log.Println("All tables created/initialized successfully!")
 }

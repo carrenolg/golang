@@ -16,7 +16,6 @@ const station = `
 	CLOSING_TIME TIME NULL
 	)
 `
-
 const schedule = `
 	CREATE TABLE IF NOT EXISTS schedule (
 	ID INTEGER PRIMARY KEY AUTOINCREMENT,
