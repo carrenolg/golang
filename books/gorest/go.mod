@@ -4,6 +4,7 @@ go 1.16
 
 require (
 	github.com/emicklei/go-restful/v3 v3.7.3 // indirect
+	github.com/gin-gonic/gin v1.7.7 // indirect
 	github.com/gorilla/handlers v1.5.1
 	github.com/gorilla/mux v1.8.0
 	github.com/gorilla/rpc v1.2.0
