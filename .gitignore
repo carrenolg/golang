@@ -160,3 +160,4 @@ dmypy.json
 # Database
 *.sql
 *.db
+*.mkv
