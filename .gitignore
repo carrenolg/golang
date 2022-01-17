@@ -161,3 +161,4 @@ dmypy.json
 *.sql
 *.db
 *.mkv
+*.js

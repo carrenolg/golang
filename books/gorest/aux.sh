@@ -6,3 +6,6 @@ go get github.com/gorilla/handlers
 go get github.com/gorilla/rpc
 go get github.com/emicklei/go-restful/v3
 go get github.com/mattn/go-sqlite3
+go get github.com/revel/revel
+go get gopkg.in/mgo.v2
+go get gopkg.in/mgo.v2/bson
