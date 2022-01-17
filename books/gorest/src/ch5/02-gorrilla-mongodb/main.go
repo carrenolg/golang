@@ -69,6 +69,44 @@ func (db *DB) PostMovie(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// UpdateMovie modifies the data of given resource
+func (db *DB) UpdateMovie(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	var movie Movie
+	putBody, _ := ioutil.ReadAll(r.Body)
+	json.Unmarshal(putBody, &movie)
+	// create a hash ID to insert
+	err := db.collection.Update(
+		bson.M{"_id": bson.ObjectIdHex(vars["id"])},
+		bson.M{"$set": &movie},
+	)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+	} else {
+		w.WriteHeader(http.StatusOK)
+		w.Header().Set("Content-Type", "text")
+		w.Write([]byte("Updated succesfully!"))
+	}
+}
+
+// DeleteMovie removes the data from the db
+func (db *DB) DeleteMovie(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	// create an Hash ID to delete
+	err := db.collection.Remove(
+		bson.M{"_id": bson.ObjectIdHex(vars["id"])},
+	)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+	} else {
+		w.WriteHeader(http.StatusOK)
+		w.Header().Set("Content-Type", "text")
+		w.Write([]byte("Deleted succesfully!"))
+	}
+}
+
 const URL = "mongodb://root:admin@172.22.0.2:27017"
 
 func main() {
@@ -88,6 +126,8 @@ func main() {
 	// attach an elegant path with handler
 	r.HandleFunc("/v1/movies/{id:[a-zA-Z0-9]*}", db.GetMovie).Methods("GET")
 	r.HandleFunc("/v1/movies", db.PostMovie).Methods("POST")
+	r.HandleFunc("/v1/movies/{id:[a-zA-Z0-9]*}", db.UpdateMovie).Methods("PUT")
+	r.HandleFunc("/v1/movies/{id:[a-zA-Z0-9]*}", db.DeleteMovie).Methods("DELETE")
 	// Server run
 	srv := &http.Server{
 		Handler:      r,
