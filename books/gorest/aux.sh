@@ -14,3 +14,6 @@ go get gopkg.in/mgo.v2/bson
 2. install dev, run following command from go.mod directory
 go install github.com/go-delve/delve/cmd/dlv@latest
 3. click on "install all" when pop-up is showed
+# Insatll grpc
+go get google.golang.org/grpc
+go get google.golang.org/grpc/cmd/protoc-gen-go-grpc

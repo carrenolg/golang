@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 
 	pb "carrenolg.io/books/gorest/src/ch6/01-proto/protofiles"
@@ -25,4 +26,9 @@ func main() {
 	fmt.Println("Marshaled proto data:", body)
 	fmt.Println("########")
 	fmt.Println("Unmarshaled struct:", p1)
+
+	// JSON
+	bodyJson, _ := json.Marshal(p)
+	fmt.Println("########")
+	fmt.Println("Json struct:", string(bodyJson))
 }
