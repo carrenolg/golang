@@ -1,0 +1,25 @@
+syntax = "proto3";
+package mcache;
+
+option go_package = "./mcache";
+
+enum status {
+    OK = 0;
+    NOT_FOUND = 1;
+    STORE_ERR = 2;
+}
+
+message Entry {
+    status stat = 2;
+    string key = 3;
+    string ctype = 4;
+    int64 mtime = 5;
+    bytes content = 6;
+    int64 size = 7;
+}
+
+service Cache {
+    rpc Get(Entry) returns(Entry) {}
+    rpc Put(Entry) returns(Entry) {}
+    rpc Del(Entry) returns(Entry) {}
+}
