@@ -17,3 +17,4 @@ go install github.com/go-delve/delve/cmd/dlv@latest
 # Insatll grpc
 go get google.golang.org/grpc
 go get google.golang.org/grpc/cmd/protoc-gen-go-grpc
+go get github.com/lib/pq
