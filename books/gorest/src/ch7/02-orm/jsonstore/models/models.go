@@ -5,16 +5,16 @@ import (
 	"gorm.io/gorm"
 )
 
-type User struct {
-	gorm.Model
-	Orders []Order
-	Data   string `sql:"type:JSONB NOT NULL DEFAULT '{}'::JSONB" json:"-"`
-}
-
 type Order struct {
 	gorm.Model
-	User User
-	Data string `sql:"type:JSONB NOT NULL DEFAULT '{}'::JSONB"`
+	Data      string `sql:"type:JSONB NOT NULL DEFAULT '{}'::JSONB"`
+	UserRefer uint
+}
+
+type User struct {
+	gorm.Model
+	Orders []Order `gorm:"foreignKey:UserRefer"`
+	Data   string  `sql:"type:JSONB NOT NULL DEFAULT '{}'::JSONB" json:"-"`
 }
 
 // GORM creates tables with plural names. Use this to suppress it.
@@ -29,7 +29,7 @@ func (Order) TableName() string {
 func InitDB() (*gorm.DB, error) {
 	var err error
 	//dsn := "postgres://admin:1q2w3e4r@172.19.0.2/storedb?sslmode=disable"
-	dsn := "host=172.19.0.2 user=admin password=1q2w3e4r dbname=storedb port=9920 sslmode=disable"
+	dsn := "host=172.19.0.2 user=admin password=1q2w3e4r dbname=storedb port=5432 sslmode=disable"
 	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	if err != nil {
 		return nil, err
