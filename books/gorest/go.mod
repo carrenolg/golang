@@ -19,6 +19,7 @@ require (
 	github.com/mattn/go-isatty v0.0.14 // indirect
 	github.com/mattn/go-sqlite3 v2.0.1+incompatible
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
+	github.com/urfave/cli/v2 v2.3.0 // indirect
 	golang.org/x/crypto v0.0.0-20220126173729-e04a8579fee6 // indirect
 	golang.org/x/net v0.0.0-20220121210141-e204ce36a2ba
 	golang.org/x/sys v0.0.0-20220114195835-da31bd327af9 // indirect
