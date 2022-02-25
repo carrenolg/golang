@@ -18,3 +18,5 @@ go install github.com/go-delve/delve/cmd/dlv@latest
 go get google.golang.org/grpc
 go get google.golang.org/grpc/cmd/protoc-gen-go-grpc
 go get github.com/lib/pq
+# curl
+ curl -XPOST -d'{"key": "111023043350789514532147", "message": "8/+JCfTb+ibIjzQtmCo="}' localhost:8080/decrypt
