@@ -1,0 +1,68 @@
+package strategy
+
+import (
+	"fmt"
+	"image"
+	"image/color"
+	"image/draw"
+	"image/jpeg"
+	"os"
+)
+
+type OutputStrategy interface {
+	Print() error
+}
+
+// Strategy 1
+type TextSquare struct{}
+
+// Strategy 2
+type ImageSquare struct {
+	DestinationFilePath string
+}
+
+//Implementations
+func (t TextSquare) Print() error {
+	println("Circle")
+	return nil
+}
+
+func (i ImageSquare) Print() error {
+	width := 800
+	height := 600
+
+	bgColor := image.Uniform{color.RGBA{R: 70, G: 70, B: 70, A: 0}}
+	origin := image.Point{0, 0}
+	quality := &jpeg.Options{Quality: 75}
+
+	bgRectangle := image.NewRGBA(image.Rectangle{
+		Min: origin,
+		Max: image.Point{X: width, Y: height},
+	})
+
+	draw.Draw(bgRectangle, bgRectangle.Bounds(), &bgColor, origin, draw.Src)
+
+	squareWidth := 200
+	squareHeight := 200
+	squareColor := image.Uniform{color.RGBA{R: 255, G: 0, B: 0, A: 1}}
+	square := image.Rect(0, 0, squareWidth, squareHeight)
+	square = square.Add(image.Point{
+		X: (width / 2) - (squareWidth / 2),
+		Y: (height / 2) - (squareHeight / 2),
+	})
+	squareImg := image.NewRGBA(square)
+
+	draw.Draw(bgRectangle, squareImg.Bounds(), &squareColor, origin, draw.Src)
+
+	w, err := os.Create(i.DestinationFilePath)
+	if err != nil {
+		return fmt.Errorf("error opening image")
+	}
+	defer w.Close()
+
+	if err = jpeg.Encode(w, bgRectangle, quality); err != nil {
+		return fmt.Errorf("error writing image to disk")
+	}
+
+	return nil
+}
