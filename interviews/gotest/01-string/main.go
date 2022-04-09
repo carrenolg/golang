@@ -17,4 +17,7 @@ func main() {
 Time: 09:15
 Day: Monday`
 	fmt.Println(raw)
+
+	slice := []string{"apple", "grapes", "mango"}
+	element := slice[0]
 }
