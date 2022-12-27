@@ -2,31 +2,40 @@ package main
 
 import (
 	"fmt"
-	"sync"
 )
 
 func main() {
+	//tareasParalelas := runtime.GOMAXPROCS(0)
 	tareasParalelas := 4
 	v := []int{0, 1, 3, 1, 0, 7, 8, 9, 3, 3, 0, 2}
 	// sync
-	wg := sync.WaitGroup{}
-	wg.Add(tareasParalelas)
+	ch := make(chan int64)
+	// mt := sync.Mutex{}
+	// wg := sync.WaitGroup{}
+	//wg.Add(tareasParalelas)
+
 	// sum
-	totalSuma := 0
+	totalSuma := int64(0)
 	for t := 0; t < tareasParalelas; t++ {
 		s := t
 		go func() {
-			defer wg.Done()
+			//defer wg.Done()
 			inicio := s * len(v) / tareasParalelas
 			fin := (s + 1) * len(v) / tareasParalelas
 			suma := Suma(v[inicio:fin])
-			totalSuma += suma
+			// mutual exclution
+			//mt.Lock()
+			//atomic.AddInt64(&totalSuma, int64(suma))
+			//mt.Unlock()
+			ch <- int64(suma)
 		}()
 	}
 	// wait
-	wg.Wait()
-	if totalSuma != 37 {
-		panic(fmt.Sprint("totalSuma:", totalSuma))
+	//wg.Wait()
+	for i := 0; i < tareasParalelas; i++ {
+		partialSum := <-ch
+		fmt.Println("Receiving:", partialSum)
+		totalSuma += partialSum
 	}
 	// output
 	fmt.Println("suma", totalSuma)
