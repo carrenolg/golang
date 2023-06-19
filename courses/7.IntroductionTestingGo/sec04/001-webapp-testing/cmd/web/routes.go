@@ -8,6 +8,7 @@ import (
 )
 
 func (app *application) routes() http.Handler {
+	// new router
 	mux := chi.NewRouter()
 
 	// register middleware
