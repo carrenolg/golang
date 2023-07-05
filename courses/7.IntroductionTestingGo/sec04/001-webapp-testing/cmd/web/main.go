@@ -14,7 +14,7 @@ func main() {
 	// get application routes
 	mux := app.routes()
 
-	// print out a message
+	// print out a message server starting
 	log.Println("Starting server on port 8080...")
 
 	// start the server
