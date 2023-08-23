@@ -8,7 +8,7 @@ import (
 type application struct{}
 
 func main() {
-	// set up an app config
+	// set up an application config
 	app := application{}
 
 	// get application routes
