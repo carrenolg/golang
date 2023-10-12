@@ -15,6 +15,7 @@ func Test_application_routes(t *testing.T) {
 		method string
 	}{
 		{"/", "GET"},
+		{"/static/*", "GET"},
 	}
 	// create a new variable of type app
 	var app application
