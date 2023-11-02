@@ -13,6 +13,7 @@ func Test_application_handlers(t *testing.T) {
 		expectedStatusCode int
 	}{
 		{"home", "/", http.StatusOK},
+		{"404", "/fish", http.StatusNotFound},
 	}
 
 	// app
