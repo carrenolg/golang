@@ -9,7 +9,6 @@ import (
 )
 
 func Test_application_addIPToContext(t *testing.T) {
-	var app application
 	tests := []struct {
 		headerName  string
 		headerValue string
@@ -61,9 +60,6 @@ func Test_application_addIPToContext(t *testing.T) {
 }
 
 func Test_application_ipFromContext(t *testing.T) {
-	// create an app var of type application
-	var app application
-
 	// get a context
 	var ctx = context.Background()
 

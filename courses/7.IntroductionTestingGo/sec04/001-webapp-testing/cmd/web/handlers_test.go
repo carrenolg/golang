@@ -17,14 +17,13 @@ func Test_application_handlers(t *testing.T) {
 	}
 
 	// app
-	var app application
 	routes := app.routes()
 
 	// create a test server
 	ts := httptest.NewTLSServer(routes)
 	defer ts.Close()
 
-	pathToTemplaes = "./../../templates/"
+	pathToTemplates = "./../../templates/"
 
 	// range through test data
 	for _, e := range tests {
