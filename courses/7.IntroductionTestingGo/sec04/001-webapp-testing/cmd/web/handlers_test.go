@@ -43,6 +43,7 @@ func TestAppHome(t *testing.T) {
 	// create a request
 	req, _ := http.NewRequest("GET", "/", nil)
 
+	// add context and session to request
 	req = addContextAndSessionToRequest(req, app)
 
 	rr := httptest.NewRecorder()
