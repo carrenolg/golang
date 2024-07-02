@@ -84,6 +84,19 @@ func TestAppHome(t *testing.T) {
 	}
 }
 
+func TestApp_renderWithBadTemplate(t *testing.T) {
+	pathToTemplates = "./testdata/"
+
+	req, _ := http.NewRequest("GET", "/", nil)
+	req = addContextAndSessionToRequest(req, app)
+	rr := httptest.NewRecorder()
+
+	err := app.render(rr, req, "bad.page.gohtml", nil)
+	if err == nil {
+		t.Error("expected error from bad template, but did not get one")
+	}
+}
+
 func getCtx(req *http.Request) context.Context {
 	ctx := context.WithValue(req.Context(), contextUserKey, "unknown")
 	return ctx
