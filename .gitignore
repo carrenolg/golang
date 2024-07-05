@@ -163,3 +163,5 @@ dmypy.json
 *.mkv
 *.js
 postgres-data/
+*.yml
+.vscode/
