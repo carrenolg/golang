@@ -1,9 +1,11 @@
 package main
 
 import (
+	"encoding/gob"
 	"flag"
 	"log"
 	"net/http"
+	"webapp/pkg/data"
 	"webapp/pkg/db"
 
 	"github.com/alexedwards/scs/v2"
@@ -16,6 +18,8 @@ type application struct {
 }
 
 func main() {
+	// register type
+	gob.Register(data.User{})
 	// set up an application config
 	app := application{}
 	dbPosgresConn := db.PostgresConn{}
