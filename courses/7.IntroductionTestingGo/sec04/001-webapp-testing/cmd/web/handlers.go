@@ -79,7 +79,6 @@ func (app *application) Login(w http.ResponseWriter, r *http.Request) {
 
 	user, err := app.DBConn.GetUserByEmail(email)
 	if err != nil {
-		log.Println(err.Error())
 		// redirect to the login page with error message
 		app.Session.Put(r.Context(), "error", "Invalid login!")
 		http.Redirect(w, r, "/", http.StatusSeeOther)

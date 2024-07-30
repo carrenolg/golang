@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"strings"
 	"testing"
 )
@@ -110,4 +111,76 @@ func addContextAndSessionToRequest(req *http.Request, app application) *http.Req
 	ctx, _ := app.Session.Load(req.Context(), req.Header.Get("X-Session"))
 
 	return req.WithContext(ctx)
+}
+
+func Test_app_Login(t *testing.T) {
+	var test = []struct {
+		name               string
+		poastedData        url.Values
+		expectedStatusCode int
+		expectedLocation   string
+	}{
+		{
+			name: "valid credentials",
+			poastedData: url.Values{
+				"email":    {"admin@example.com"},
+				"password": {"secret"},
+			},
+			expectedStatusCode: http.StatusSeeOther,
+			expectedLocation:   "/user/profile",
+		},
+		{
+			name: "missing data",
+			poastedData: url.Values{
+				"email":    {""},
+				"password": {""},
+			},
+			expectedStatusCode: http.StatusSeeOther,
+			expectedLocation:   "/",
+		},
+		{
+			name: "user not found",
+			poastedData: url.Values{
+				"email":    {"you@there.com"},
+				"password": {"password"},
+			},
+			expectedStatusCode: http.StatusSeeOther,
+			expectedLocation:   "/",
+		},
+		{
+			name: "no auth",
+			poastedData: url.Values{
+				"email":    {"admin@example.com"},
+				"password": {"password"},
+			},
+			expectedStatusCode: http.StatusSeeOther,
+			expectedLocation:   "/",
+		},
+	}
+
+	// loop
+	for _, e := range test {
+		req, _ := http.NewRequest("POST", "/login", strings.NewReader(e.poastedData.Encode()))
+		req = addContextAndSessionToRequest(req, app)
+		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+		rr := httptest.NewRecorder()
+		handler := http.HandlerFunc(app.Login)
+		handler.ServeHTTP(rr, req)
+
+		// check status code
+		if rr.Code != e.expectedStatusCode {
+			t.Errorf("Test_app_Login expected status %d, but got %d", e.expectedStatusCode, rr.Code)
+		}
+
+		// check location
+		actualLocation, err := rr.Result().Location()
+		if err == nil {
+			if actualLocation.String() != e.expectedLocation {
+				t.Errorf("Test_app_Login expected location %s, but got %s", e.expectedLocation, actualLocation.String())
+			}
+		} else {
+			t.Errorf("Test_app_Login no location header set %s,", e.name)
+		}
+
+	}
 }
