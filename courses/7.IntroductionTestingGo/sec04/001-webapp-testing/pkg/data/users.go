@@ -2,7 +2,6 @@ package data
 
 import (
 	"errors"
-	"log"
 	"time"
 
 	"golang.org/x/crypto/bcrypt"
@@ -24,7 +23,6 @@ type User struct {
 // with the hash we have stored for a given user in the database. If the password
 // and hash match, we return true; otherwise, we return false.
 func (u *User) PasswordMatches(plainText string) (bool, error) {
-	log.Println(u.Password, plainText)
 	err := bcrypt.CompareHashAndPassword([]byte(u.Password), []byte(plainText))
 	if err != nil {
 		switch {
