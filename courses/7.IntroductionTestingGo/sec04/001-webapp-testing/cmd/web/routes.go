@@ -21,8 +21,8 @@ func (app *application) routes() http.Handler {
 	mux.Post("/login", app.Login)
 
 	// user routes
-	mux.Route("/user", func(r chi.Router) {
-		r.Use(app.auth)
+	mux.Route("/user", func(mux chi.Router) {
+		mux.Use(app.auth)
 		mux.Get("/profile", app.Profile)
 	})
 

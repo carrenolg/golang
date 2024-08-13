@@ -12,12 +12,15 @@ import (
 
 func Test_application_handlers(t *testing.T) {
 	var tests = []struct {
-		name               string
-		url                string
-		expectedStatusCode int
+		name                    string
+		url                     string
+		expectedStatusCode      int
+		expectedURL             string
+		expectedFirstStatusCode int
 	}{
-		{"home", "/", http.StatusOK},
-		{"404", "/fish", http.StatusNotFound},
+		{"home", "/", http.StatusOK, "/", http.StatusOK},
+		{"404", "/fish", http.StatusNotFound, "/fish", http.StatusNotFound},
+		{"profile", "/user/profile", http.StatusOK, "/", http.StatusTemporaryRedirect},
 	}
 
 	// app
