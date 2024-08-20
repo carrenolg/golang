@@ -6,14 +6,15 @@ import (
 	"log"
 	"net/http"
 	"webapp/pkg/data"
-	"webapp/pkg/db"
+	"webapp/pkg/repository"
+	"webapp/pkg/repository/dbrepo"
 
 	"github.com/alexedwards/scs/v2"
 )
 
 type application struct {
 	DSN     string
-	DBConn  db.PostgresConn
+	DBConn  repository.DatabaseRepo
 	Session *scs.SessionManager
 }
 
@@ -22,7 +23,6 @@ func main() {
 	gob.Register(data.User{})
 	// set up an application config
 	app := application{}
-	dbPosgresConn := db.PostgresConn{}
 
 	// set up a database connection
 	flag.StringVar(&app.DSN, "dsn", "host=localhost port=5432 user=postgres password=postgres dbname=users sslmode=disable timezone=UTC connect_timeout=5", "Postgres connection")
@@ -36,8 +36,7 @@ func main() {
 	defer conn.Close()
 
 	// set up the database connection
-	dbPosgresConn.DB = conn
-	app.DBConn = dbPosgresConn
+	app.DBConn = &dbrepo.PostgresDBRepo{DB: conn}
 
 	// get a session manager
 	app.Session = getSession()
