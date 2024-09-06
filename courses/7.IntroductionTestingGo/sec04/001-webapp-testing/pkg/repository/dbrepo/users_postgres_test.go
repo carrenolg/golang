@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"testing"
+	"time"
 
 	_ "github.com/jackc/pgconn"
 	_ "github.com/jackc/pgx/v4"
@@ -59,25 +60,32 @@ func TestMain(m *testing.M) {
 		},
 	}
 
+	hostConfig := func(config *docker.HostConfig) {
+		// set AutoRemove to true so that stopped container goes away by itself
+		config.AutoRemove = true
+		config.RestartPolicy = docker.RestartPolicy{Name: "no"}
+	}
+
 	// get a resource (docker image)
-	resource, err = pool.RunWithOptions(&opts)
+	resource, err = pool.RunWithOptions(&opts, hostConfig)
 	if err != nil {
 		_ = pool.Purge(resource)
 		log.Fatalf("could not start resource: %s", err)
 	}
 
+	resource.Expire(120) // Tell docker to hard kill the container in 120 seconds
+
 	// start the image and wait until it's ready
-	if err := pool.Retry(func() error {
-		var err error
+	// exponential backoff-retry, because the application in the container might not be ready to accept connections yet
+	pool.MaxWait = 120 * time.Second
+	if err = pool.Retry(func() error {
 		testDB, err = sql.Open("pgx", fmt.Sprintf(dsn, host, port, user, password, dbName))
 		if err != nil {
-			log.Println("Error:", err)
 			return err
 		}
 		return testDB.Ping()
 	}); err != nil {
-		_ = pool.Purge(resource)
-		log.Fatalf("could not connect to docker: %s", err)
+		log.Fatalf("Could not connect to docker: %s", err)
 	}
 
 	// populate the database with empty tables
@@ -87,6 +95,12 @@ func TestMain(m *testing.M) {
 	}
 
 	code := m.Run()
+
+	// purge resource when done
+	if purgeErr := pool.Purge(resource); purgeErr != nil {
+		log.Fatalf("Could not purge resource: %s", err)
+	}
+
 	os.Exit(code)
 }
 
@@ -102,4 +116,11 @@ func createTestTables() error {
 		return err
 	}
 	return nil
+}
+
+func Test_pingDB(t *testing.T) {
+	err := testDB.Ping()
+	if err != nil {
+		t.Error("can't ping database")
+	}
 }
