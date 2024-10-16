@@ -7,6 +7,8 @@ import (
 	"os"
 	"testing"
 	"time"
+	"webapp/pkg/data"
+	"webapp/pkg/repository"
 
 	_ "github.com/jackc/pgconn"
 	_ "github.com/jackc/pgx/v4"
@@ -27,6 +29,7 @@ var (
 var resource *dockertest.Resource
 var pool *dockertest.Pool
 var testDB *sql.DB
+var testRepo repository.DatabaseRepo
 
 func TestMain(m *testing.M) {
 	// connect to docker; fail if docker not running
@@ -94,6 +97,9 @@ func TestMain(m *testing.M) {
 		log.Fatalf("could not create test tables: %s", err)
 	}
 
+	testRepo = &PostgresDBRepo{DB: testDB}
+
+	// run the tests
 	code := m.Run()
 
 	// purge resource when done
@@ -122,5 +128,24 @@ func Test_pingDB(t *testing.T) {
 	err := testDB.Ping()
 	if err != nil {
 		t.Error("can't ping database")
+	}
+}
+
+func TestPostgresDBRepoInsertUser(t *testing.T) {
+	testUser := data.User{
+		FirstName: "Admin",
+		LastName:  "User",
+		Email:     "admin2@example.com",
+		Password:  "secret",
+		IsAdmin:   1,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+	id, err := testRepo.InsertUser(testUser)
+	if err != nil {
+		t.Errorf("insert user return an error: %s", err)
+	}
+	if id != 3 {
+		t.Errorf("insert user return wrong id; expected 2, but got %d", id)
 	}
 }
