@@ -204,3 +204,77 @@ func TestPostgresDBRepoGetUserByEmail(t *testing.T) {
 		t.Errorf("expected user id 3, but got %d", user.ID)
 	}
 }
+
+func TestPostgresDBRepoUpdateUser(t *testing.T) {
+	user, err := testRepo.GetUser(3)
+	if err != nil {
+		t.Errorf("can't get user by id: %s", err)
+	}
+	user.FirstName = "Jane"
+	user.Email = "jane@smith.com"
+	err = testRepo.UpdateUser(*user)
+	if err != nil {
+		t.Errorf("can't update user: %s", err)
+	}
+	user, err = testRepo.GetUser(3)
+	if err != nil {
+		t.Errorf("can't get user by id: %s", err)
+	}
+	if user.FirstName != "Jane" {
+		t.Errorf("expected user first name Jane, but got %s", user.FirstName)
+	}
+	if user.Email != "jane@smith.com" {
+		t.Errorf("expected user email jane@smith.com but got %s", user.Email)
+	}
+}
+
+func TestPostgresDBRepoDeleteUser(t *testing.T) {
+	err := testRepo.DeleteUser(3)
+	if err != nil {
+		t.Errorf("can't delete user: %s", err)
+	}
+	_, err = testRepo.GetUser(3)
+	if err == nil {
+		t.Error("expected error, but got nil")
+	}
+}
+
+func TestPostgresDBRepoResetPassword(t *testing.T) {
+	err := testRepo.ResetPassword(2, "newpassword")
+	if err != nil {
+		t.Errorf("can't reset password: %s", err)
+	}
+	user, err := testRepo.GetUser(2)
+	if err != nil {
+		t.Errorf("can't get user by id: %s", err)
+	}
+	matches, err := user.PasswordMatches("newpassword")
+	if err != nil {
+		t.Errorf("can't compare password: %s", err)
+	}
+	if !matches {
+		t.Error("password doesn't match")
+	}
+}
+
+func TestPostgresDBrepoInsertUserImage(t *testing.T) {
+	var image data.UserImage
+	image.UserID = 2
+	image.FileName = "test.jpg"
+	image.CreatedAt = time.Now()
+	image.UpdatedAt = time.Now()
+
+	newId, err := testRepo.InsertUserImage(image)
+	if err != nil {
+		t.Errorf("can't insert user image: %s", err)
+	}
+	if newId != 2 {
+		t.Errorf("expected new id 1, but got %d", newId)
+	}
+	// user id not found
+	image.UserID = 100
+	_, err = testRepo.InsertUserImage(image)
+	if err == nil {
+		t.Error("expected error, but got nil")
+	}
+}
