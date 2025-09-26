@@ -12,22 +12,33 @@ func main() {
 	c2 := make(chan string)
 
 	go func() {
-		time.Sleep(1 * time.Second)
-		c1 <- "one"
-		// c2 <- "two"
+		for i := range 10 {
+			time.Sleep(1 * time.Second)
+			c1 <- fmt.Sprintf("[%d]: Go1", i)
+		}
+		close(c1)
 	}()
 
 	go func() {
-		time.Sleep(1 * time.Second)
-		// c1 <- "one"
-		c2 <- "two"
+		for i := range 2 {
+			time.Sleep(3 * time.Second)
+			c1 <- fmt.Sprintf("[%d]: Go2", i)
+		}
 	}()
 
-	for i := 0; i < 2; i++ {
+	for {
 		select {
-		case msg1 := <-c1:
+		case msg1, ok := <-c1:
+			if !ok {
+				fmt.Println("c2 channel closed")
+				return
+			}
 			fmt.Println("received", msg1)
-		case msg2 := <-c2:
+		case msg2, ok := <-c2:
+			if !ok {
+				fmt.Println("c2 channel closed")
+				return
+			}
 			fmt.Println("received", msg2)
 		}
 	}
