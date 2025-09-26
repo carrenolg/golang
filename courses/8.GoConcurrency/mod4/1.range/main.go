@@ -17,7 +17,7 @@ func main() {
 }
 
 func sender() {
-	for i := 0; i < 100; i++ {
+	for i := range 100 {
 		ch <- i
 	}
 	close(ch)
