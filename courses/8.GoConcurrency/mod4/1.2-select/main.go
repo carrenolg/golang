@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	// fmt.Println("running..")
+	// mod4 1.1 - multiple channels/goroutines with select
 
 	c1 := make(chan string)
 	c2 := make(chan string)
