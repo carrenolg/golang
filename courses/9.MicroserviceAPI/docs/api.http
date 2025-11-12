@@ -1,0 +1,6 @@
+GET http://localhost:8080/customers/gio
+Content-Type: application/json
+
+###
+POST http://localhost:8080/customers
+Content-Type: application/json
