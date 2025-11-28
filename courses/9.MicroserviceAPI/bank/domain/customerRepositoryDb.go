@@ -1,6 +1,7 @@
 package domain
 
 import (
+	"bank/errs"
 	"database/sql"
 	"log"
 	"os"
@@ -21,7 +22,7 @@ func (d customerRepositoryDb) FindAll(status string) ([]Customer, error) {
 	}
 	rows, err := d.dbClient.Query("SELECT customer_id, name, city, zipcode, date_of_birth, status FROM customers WHERE status = ?", status)
 	if err != nil {
-		return nil, err
+		return nil, errs.NewUnexpectedError("unexpected database error")
 	}
 	defer rows.Close()
 
@@ -29,7 +30,7 @@ func (d customerRepositoryDb) FindAll(status string) ([]Customer, error) {
 		var customer Customer
 		err := rows.Scan(&customer.Id, &customer.Name, &customer.City, &customer.Zipcode, &customer.DateOfBirth, &customer.Status)
 		if err != nil {
-			return nil, err
+			return nil, errs.NewUnexpectedError("unexpected database error")
 		}
 		customers = append(customers, customer)
 	}
@@ -49,4 +50,17 @@ func NewCustomerRepositoryDb() CustomerRepository {
 	}
 
 	return customerRepositoryDb{dbClient: dbClient}
+}
+
+func (d customerRepositoryDb) ById(id string) (*Customer, error) {
+	customer := &Customer{}
+	row := d.dbClient.QueryRow("SELECT customer_id, name, city, zipcode, date_of_birth, status FROM customers WHERE customer_id = ?", id)
+	err := row.Scan(&customer.Id, &customer.Name, &customer.City, &customer.Zipcode, &customer.DateOfBirth, &customer.Status)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, errs.NewNotFoundError("customer not found")
+		}
+		return nil, errs.NewUnexpectedError("unexpected database error")
+	}
+	return customer, nil
 }
