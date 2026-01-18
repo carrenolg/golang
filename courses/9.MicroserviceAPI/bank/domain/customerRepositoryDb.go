@@ -4,8 +4,6 @@ import (
 	"bank/errs"
 	"bank/logger"
 	"database/sql"
-	"log"
-	"os"
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
@@ -16,17 +14,7 @@ type customerRepositoryDb struct {
 	dbClient *sqlx.DB
 }
 
-func NewCustomerRepositoryDb() CustomerRepository {
-	dataSourceName := os.Getenv("DB_DATASOURCE")
-	if dataSourceName == "" {
-		log.Fatal("DB_DATASOURCE environment variable is not set")
-	}
-
-	dbClient, err := sqlx.Open("mysql", dataSourceName)
-	if err != nil {
-		log.Fatal(err)
-	}
-
+func NewCustomerRepositoryDb(dbClient *sqlx.DB) CustomerRepository {
 	return customerRepositoryDb{dbClient: dbClient}
 }
 

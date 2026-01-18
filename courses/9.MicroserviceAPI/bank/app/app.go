@@ -4,10 +4,13 @@ import (
 	"bank/domain"
 	"bank/service"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/gorilla/mux"
+	"github.com/jmoiron/sqlx"
 )
 
 func Start() {
@@ -15,9 +18,11 @@ func Start() {
 	// mux := http.NewServeMux()
 	router := mux.NewRouter()
 
-	// wiring
-	ch := CustomerHandlers{service: service.NewCustomerService(domain.NewCustomerRepositoryDb())}
+	// get db client
+	dbClient := getDbClient()
 
+	// wiring
+	ch := CustomerHandlers{service: service.NewCustomerService(domain.NewCustomerRepositoryDb(dbClient))}
 	// define routes
 	router.HandleFunc("/customers", ch.getAllCustomers).Methods(http.MethodGet)
 	router.HandleFunc("/customers/{customer_id:[0-9]+}", ch.getCustomer).Methods(http.MethodGet)
@@ -32,4 +37,21 @@ func Start() {
 		port = "8080"
 	}
 	http.ListenAndServe(fmt.Sprintf("%s:%s", address, port), router)
+}
+
+func getDbClient() *sqlx.DB {
+	dataSourceName := os.Getenv("DB_DATASOURCE")
+	if dataSourceName == "" {
+		log.Fatal("DB_DATASOURCE environment variable is not set")
+	}
+	dbClient, err := sqlx.Open("mysql", dataSourceName)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	dbClient.SetMaxOpenConns(10)
+	dbClient.SetMaxIdleConns(10)
+	dbClient.SetConnMaxLifetime(time.Duration(10) * time.Minute)
+
+	return dbClient
 }
