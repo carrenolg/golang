@@ -23,9 +23,14 @@ func Start() {
 
 	// wiring
 	ch := CustomerHandlers{service: service.NewCustomerService(domain.NewCustomerRepositoryDb(dbClient))}
+	ah := AccountHandlers{service: service.NewAccountService(domain.NewAccountRepositoryDb(dbClient))}
+
 	// define routes
 	router.HandleFunc("/customers", ch.getAllCustomers).Methods(http.MethodGet)
 	router.HandleFunc("/customers/{customer_id:[0-9]+}", ch.getCustomer).Methods(http.MethodGet)
+
+	// account routes
+	router.HandleFunc("/customers/{customer_id:[0-9]+}/account", ah.NewAccount).Methods(http.MethodPost)
 
 	// start server
 	address := os.Getenv("SERVER_ADDRESS")
