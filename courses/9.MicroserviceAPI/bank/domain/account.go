@@ -17,4 +17,6 @@ func (a Account) ToDto() *dto.NewAccountResponse {
 
 type AccountRepository interface {
 	Save(account Account) (*Account, error)
+	SaveTransaction(transaction Transaction) (*Transaction, error)
+	FindById(id string) (*Account, error)
 }

@@ -4,6 +4,7 @@ import (
 	"bank/errs"
 	"bank/logger"
 	"strconv"
+	"time"
 
 	"github.com/jmoiron/sqlx"
 	"go.uber.org/zap"
@@ -27,6 +28,65 @@ func (d AccountRepositoryDb) Save(account Account) (*Account, error) {
 	}
 	account.AccountId = strconv.FormatInt(id, 10)
 	return &account, nil
+}
+
+func (d AccountRepositoryDb) SaveTransaction(t Transaction) (*Transaction, error) {
+	// starting the database transaction
+
+	tx, beginErr := d.client.Begin()
+	if beginErr != nil {
+		logger.Error("Error starting database transaction", zap.Error(beginErr))
+		return nil, errs.NewUnexpectedError("unexpected database error")
+	}
+
+	// inserting bank transaction
+	result, insertErr := tx.Exec("INSERT INTO transactions (account_id, amount, transaction_type, transaction_date) VALUES (?, ?, ?, ?)", t.AccountId, t.Amount, t.TransactionType, t.TransactionDate)
+
+	// updating bank account balance
+	if t.IsWithdrawal() {
+		_, insertErr = tx.Exec("UPDATE accounts SET amount = amount - ? WHERE account_id = ?", t.Amount, t.AccountId)
+	} else {
+		_, insertErr = tx.Exec("UPDATE accounts SET amount = amount + ? WHERE account_id = ?", t.Amount, t.AccountId)
+	}
+
+	// in case of error, rollback the transaction
+	if insertErr != nil {
+		tx.Rollback()
+		logger.Error("Error updating bank account balance", zap.Error(insertErr))
+		return nil, errs.NewUnexpectedError("unexpected database error")
+	}
+
+	// getting the last insert id
+	lastInsertId, lastInsertErr := result.LastInsertId()
+	if lastInsertErr != nil {
+		logger.Error("Error getting last insert id", zap.Error(lastInsertErr))
+		return nil, errs.NewUnexpectedError("unexpected database error")
+	}
+	t.TransactionId = strconv.FormatInt(lastInsertId, 10)
+
+	// getting the updated bank account balance
+	account, accountErr := d.FindById(t.AccountId)
+	if accountErr != nil {
+		logger.Error("Error getting bank account", zap.Error(accountErr))
+		return nil, errs.NewUnexpectedError("unexpected database error")
+	}
+
+	// updating the bank account balance
+	t.Amount = account.Amount
+	t.TransactionDate = time.Now().Format("2006-01-02 15:04:05")
+	return &t, nil
+
+}
+
+func (d AccountRepositoryDb) FindById(id string) (*Account, error) {
+	account := &Account{}
+	query := "SELECT account_id, customer_id, opening_date, account_type, amount, status FROM accounts WHERE account_id = ?"
+	err := d.client.Get(account, query, id)
+	if err != nil {
+		logger.Error("Error getting bank account", zap.Error(err))
+		return nil, errs.NewUnexpectedError("unexpected database error")
+	}
+	return account, nil
 }
 
 func NewAccountRepositoryDb(dbClient *sqlx.DB) AccountRepository {
