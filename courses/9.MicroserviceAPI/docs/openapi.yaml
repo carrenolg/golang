@@ -1,0 +1,236 @@
+openapi: 3.0.3
+info:
+  title: Banking API
+  description: RESTful banking API for managing customers, accounts, and transactions.
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:8080
+    description: Local development server
+
+paths:
+  /customers:
+    get:
+      summary: List customers
+      parameters:
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [active, inactive]
+          description: Filter customers by status. Omit to return all.
+      responses:
+        "200":
+          description: List of customers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Customer"
+        "500":
+          $ref: "#/components/responses/UnexpectedError"
+
+  /customers/{customer_id}:
+    get:
+      summary: Get a customer by ID
+      description: Returns JSON by default. Send `Content-Type: application/xml` to receive XML.
+      parameters:
+        - $ref: "#/components/parameters/CustomerId"
+      responses:
+        "200":
+          description: Customer found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Customer"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/Customer"
+        "404":
+          $ref: "#/components/responses/NotFoundError"
+        "500":
+          $ref: "#/components/responses/UnexpectedError"
+
+  /customers/{customer_id}/account:
+    post:
+      summary: Create a bank account
+      parameters:
+        - $ref: "#/components/parameters/CustomerId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NewAccountRequest"
+            example:
+              account_type: saving
+              amount: 5000
+      responses:
+        "201":
+          description: Account created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NewAccountResponse"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "500":
+          $ref: "#/components/responses/UnexpectedError"
+
+  /customers/{customer_id}/accounts/{account_id}:
+    post:
+      summary: Make a transaction (deposit or withdrawal)
+      parameters:
+        - $ref: "#/components/parameters/CustomerId"
+        - $ref: "#/components/parameters/AccountId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransactionRequest"
+            examples:
+              deposit:
+                summary: Deposit
+                value:
+                  amount: 500
+                  transaction_type: deposit
+              withdrawal:
+                summary: Withdrawal
+                value:
+                  amount: 100
+                  transaction_type: withdrawal
+      responses:
+        "200":
+          description: Transaction successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionResponse"
+        "400":
+          $ref: "#/components/responses/ValidationError"
+        "500":
+          $ref: "#/components/responses/UnexpectedError"
+
+components:
+  parameters:
+    CustomerId:
+      name: customer_id
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Numeric customer ID
+    AccountId:
+      name: account_id
+      in: path
+      required: true
+      schema:
+        type: integer
+      description: Numeric account ID
+
+  schemas:
+    Customer:
+      type: object
+      properties:
+        id:
+          type: string
+          example: "2000"
+        name:
+          type: string
+          example: Steve
+        city:
+          type: string
+          example: Delhi
+        zipcode:
+          type: string
+          example: "110075"
+        date_of_birth:
+          type: string
+          example: "1978-12-15"
+        status:
+          type: string
+          enum: [active, inactive]
+          example: active
+
+    NewAccountRequest:
+      type: object
+      required: [account_type, amount]
+      properties:
+        account_type:
+          type: string
+          enum: [saving, checking]
+        amount:
+          type: number
+          format: float
+          minimum: 5000
+          description: Opening deposit. Minimum 5000.
+
+    NewAccountResponse:
+      type: object
+      properties:
+        account_id:
+          type: string
+          example: "95472"
+
+    TransactionRequest:
+      type: object
+      required: [amount, transaction_type]
+      properties:
+        amount:
+          type: number
+          format: float
+          minimum: 0
+        transaction_type:
+          type: string
+          enum: [deposit, withdrawal]
+
+    TransactionResponse:
+      type: object
+      properties:
+        transaction_id:
+          type: string
+          example: "1"
+        account_id:
+          type: string
+          example: "95470"
+        new_balance:
+          type: number
+          format: float
+          example: 6723.23
+        transaction_type:
+          type: string
+          enum: [deposit, withdrawal]
+        transaction_date:
+          type: string
+          format: date-time
+          example: "2024-01-15 10:30:00"
+
+    AppError:
+      type: object
+      properties:
+        Message:
+          type: string
+          example: "customer not found"
+
+  responses:
+    ValidationError:
+      description: Validation failed
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppError"
+    NotFoundError:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppError"
+    UnexpectedError:
+      description: Unexpected server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/AppError"
