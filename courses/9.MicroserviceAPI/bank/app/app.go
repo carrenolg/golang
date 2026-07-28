@@ -31,7 +31,7 @@ func Start() {
 
 	// account routes
 	router.HandleFunc("/customers/{customer_id:[0-9]+}/account", ah.NewAccount).Methods(http.MethodPost)
-
+	router.HandleFunc("/customers/{customer_id:[0-9]+}/accounts/{account_id:[0-9]+}", ah.MakeTransaction).Methods(http.MethodPost)
 	// start server
 	address := os.Getenv("SERVER_ADDRESS")
 	if address == "" {
