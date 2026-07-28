@@ -78,15 +78,15 @@ func (d AccountRepositoryDb) SaveTransaction(t Transaction) (*Transaction, error
 
 }
 
-func (d AccountRepositoryDb) FindById(id string) (*Account, error) {
-	account := &Account{}
+func (d AccountRepositoryDb) FindById(accountId string) (*Account, error) {
 	query := "SELECT account_id, customer_id, opening_date, account_type, amount, status FROM accounts WHERE account_id = ?"
-	err := d.client.Get(account, query, id)
+	var account Account
+	err := d.client.Get(&account, query, accountId)
 	if err != nil {
 		logger.Error("Error getting bank account", zap.Error(err))
 		return nil, errs.NewUnexpectedError("unexpected database error")
 	}
-	return account, nil
+	return &account, nil
 }
 
 func NewAccountRepositoryDb(dbClient *sqlx.DB) AccountRepository {

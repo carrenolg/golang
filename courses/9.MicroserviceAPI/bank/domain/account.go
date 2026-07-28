@@ -20,3 +20,10 @@ type AccountRepository interface {
 	SaveTransaction(transaction Transaction) (*Transaction, error)
 	FindById(id string) (*Account, error)
 }
+
+func (a Account) CanWithdraw(amount float64) bool {
+	if a.Amount < amount {
+		return false
+	}
+	return true
+}
