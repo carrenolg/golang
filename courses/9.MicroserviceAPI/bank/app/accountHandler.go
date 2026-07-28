@@ -24,9 +24,10 @@ func (ah AccountHandlers) NewAccount(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	request.CustomerId = customerId
-	account, err := ah.service.NewAccount(request)
-	if err != nil {
-		writeResponse(w, http.StatusInternalServerError, err.Error())
+	account, appError := ah.service.NewAccount(request)
+	if appError != nil {
+		appErr := appError.(*errs.AppError)
+		writeResponse(w, appErr.Code, appErr)
 		return
 	}
 	writeResponse(w, http.StatusCreated, account)

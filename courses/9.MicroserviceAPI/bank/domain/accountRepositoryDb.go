@@ -59,19 +59,25 @@ func (d AccountRepositoryDb) SaveTransaction(t Transaction) (*Transaction, error
 	// getting the last insert id
 	lastInsertId, lastInsertErr := result.LastInsertId()
 	if lastInsertErr != nil {
+		tx.Rollback()
 		logger.Error("Error getting last insert id", zap.Error(lastInsertErr))
 		return nil, errs.NewUnexpectedError("unexpected database error")
 	}
 	t.TransactionId = strconv.FormatInt(lastInsertId, 10)
 
-	// getting the updated bank account balance
+	// committing the transaction before reading updated balance
+	if commitErr := tx.Commit(); commitErr != nil {
+		logger.Error("Error committing database transaction", zap.Error(commitErr))
+		return nil, errs.NewUnexpectedError("unexpected database error")
+	}
+
+	// getting the updated bank account balance after commit
 	account, accountErr := d.FindById(t.AccountId)
 	if accountErr != nil {
 		logger.Error("Error getting bank account", zap.Error(accountErr))
 		return nil, errs.NewUnexpectedError("unexpected database error")
 	}
 
-	// updating the bank account balance
 	t.Amount = account.Amount
 	t.TransactionDate = time.Now().Format("2006-01-02 15:04:05")
 	return &t, nil

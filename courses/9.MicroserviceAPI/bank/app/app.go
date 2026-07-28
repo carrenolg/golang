@@ -3,7 +3,6 @@ package app
 import (
 	"bank/domain"
 	"bank/service"
-	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -35,13 +34,13 @@ func Start() {
 	// start server
 	address := os.Getenv("SERVER_ADDRESS")
 	if address == "" {
-		address = ":8080"
+		port := os.Getenv("SERVER_PORT")
+		if port == "" {
+			port = "8080"
+		}
+		address = ":" + port
 	}
-	port := os.Getenv("SERVER_PORT")
-	if port == "" {
-		port = "8080"
-	}
-	http.ListenAndServe(fmt.Sprintf("%s:%s", address, port), router)
+	http.ListenAndServe(address, router)
 }
 
 func getDbClient() *sqlx.DB {
